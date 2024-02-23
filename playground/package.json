@@ -10,6 +10,11 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
+  "dependencies": {
+    "@videtor/renderer": "workspace:^"
+  },
+   "devDependencies": {
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

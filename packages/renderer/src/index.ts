@@ -1,3 +1,6 @@
+export const add = (a:number, b:number) => {
+  return a + b
+}
 export class Renderer {
   static RenderEvent = {
     updateNode: 'updateNode',
@@ -48,6 +51,4 @@ export class Renderer {
   // curSelectNode: SegmentNode
 
   // iconCanvas?: HTMLCanvasElement
-
-
 }

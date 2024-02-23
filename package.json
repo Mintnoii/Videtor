@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev:play": "cd playground && pnpm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "svelte": "^4.2.11",
-    "type-fest": "^4.10.3"
+    "type-fest": "^4.10.3",
+    "vite-plugin-dts": "^3.7.3"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.2",

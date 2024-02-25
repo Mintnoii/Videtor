@@ -1,11 +1,16 @@
 <script lang="ts">
-import {add} from '@videtor/renderer'
+import { Renderer} from '@videtor/renderer'
+	import { onMount } from 'svelte';
 
   let count: number = 0
   const increment = () => {
     count += 1
-    console.log(add(1,2),'=====',add)
   }
+
+  onMount(() => {
+  const renderer = new Renderer()
+  renderer.render()
+  })
 </script>
 
 <button on:click={increment}>

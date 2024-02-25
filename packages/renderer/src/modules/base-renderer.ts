@@ -1,5 +1,6 @@
 import Konva from "konva"
 import {LayerData, FrameNode,FrameRenderNode, FrameInfo} from '@/types'
+import {EventEmitter, IKonvaEventEmitter} from '@/libraries'
 
 export interface RendererFrameInfo {
   // 片段信息
@@ -15,15 +16,21 @@ export interface RendererFrameInfo {
 }
 
 export default abstract class BaseRenderer {
+  // 渲染器实例
+    protected renderer: any
    /**当前绘制信息 */
   protected curRenderInfo: RendererFrameInfo
   /**当前绘制是否是懒绘制：懒绘制是指无需关心帧数据是否准备完毕 */
   // protected curDrawIsLazy: boolean
   protected frameIndex: number
-  constructor() {
-    this.frameIndex = 0
-  }
 
+    protected eventEmitter: IKonvaEventEmitter
+
+  // todo 这里的类型需要修改
+  constructor(renderer: any, eventEmitter: IKonvaEventEmitter) {
+    this.renderer = renderer
+    this.eventEmitter = eventEmitter
+  }
     /**创建renderNode */
   protected createRenderNode(frameNode: FrameNode<LayerData>): FrameRenderNode<any, any> {
     const node: FrameRenderNode = {

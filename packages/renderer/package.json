@@ -20,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "konva": "^9.3.3"
+    "konva": "^9.3.3",
+    "mitt": "^3.0.1"
   }
 }

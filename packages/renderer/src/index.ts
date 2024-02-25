@@ -1,5 +1,5 @@
 import Konva from "konva"
-import {EventEmitter, IKonvaEventEmitter} from '@/libraries'
+import {EventEmitter, IKonvaEventEmitter} from '@/libs'
 import ImageRenderer from '@/modules/img-renderer'
 
 export class Renderer {
@@ -39,7 +39,6 @@ export class Renderer {
     console.log('render')
     // var width = window.innerWidth;
     //   var height = window.innerHeight;
-
       var stage = new Konva.Stage({
         container: 'container',
         width: 600,
@@ -48,8 +47,6 @@ export class Renderer {
 
       var layer = new Konva.Layer();
       stage.add(layer);
-
-      // main API:
       var imageObj = new Image();
       imageObj.onload = function() {
         var yoda = new Konva.Image({
@@ -65,18 +62,6 @@ export class Renderer {
         layer.batchDraw();
       };
       imageObj.src = 'https://test-minio.xmov.ai/xmov-dmp/youguang/v3/production/476_1700533809772_3135730058.png';
-
-      // alternative API:
-      // Konva.Image.fromURL('/assets/darth-vader.jpg', function(darthNode) {
-      //   darthNode.setAttrs({
-      //     x: 200,
-      //     y: 50,
-      //     scaleX: 0.5,
-      //     scaleY: 0.5
-      //   });
-      //   layer.add(darthNode);
-      //   layer.batchDraw();
-      // });
   }
 // const renderElements = (nodes: UIEventNode[]) => {
 //   setTransformerNodes([])

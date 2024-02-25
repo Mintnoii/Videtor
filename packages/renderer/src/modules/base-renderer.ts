@@ -1,6 +1,6 @@
 import Konva from "konva"
 import {LayerData, FrameNode,FrameRenderNode, FrameInfo} from '@/types'
-import {EventEmitter, IKonvaEventEmitter} from '@/libraries'
+import {EventEmitter, IKonvaEventEmitter} from '@/libs'
 
 export interface RendererFrameInfo {
   // 片段信息

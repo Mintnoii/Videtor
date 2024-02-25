@@ -13,6 +13,9 @@ import { Renderer} from '@videtor/renderer'
   })
 </script>
 
-<button on:click={increment}>
+<div>
+  画布
+</div>
+<!-- <button on:click={increment}>
   count is {count}
-</button>
+</button> -->

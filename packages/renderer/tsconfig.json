@@ -20,6 +20,6 @@
     // 关闭 Class 严格的属性初始化检查
     "strictPropertyInitialization": false
   },
-  "include": ["src/*.ts", "src/**/*.ts", "src/**/*.d.ts",],
-  "exclude": ["dist", "node_modules"],
+  "include": ["src/*.ts", "src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["dist", "node_modules"]
 }

@@ -14,9 +14,9 @@ import type { AbstractClass } from 'type-fest'
 // // 创建 Dog 类的实例
 // const myDog = new Dog();
 // myDog.makeSound(); // 输出: Woof! Woof!
-import BaseRenderer from "./base-renderer"
+import BaseRenderer from './base-renderer'
 
-export default class ImageRenderer extends BaseRenderer  {
+export default class ImageRenderer extends BaseRenderer {
   // createRenderNode(segmentNode: SegmentNode<WidgetImageData>): SegmentRenderNode<number, null> {
   //   const renderNode = super.createRenderNode(segmentNode)
   //   const group = new Konva.Group({

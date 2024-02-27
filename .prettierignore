@@ -1,0 +1,17 @@
+# npm包
+/node_modules
+
+# build产物
+/dist
+
+# eslint
+.eslintcache
+
+# docs api文档
+/docs
+
+# lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.pnpm-store

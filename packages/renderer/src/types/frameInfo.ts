@@ -1,4 +1,4 @@
-import Konva from "konva"
+import Konva from 'konva'
 
 /**视口的坐标系类型 */
 export enum ViewPortCoordinateType {
@@ -85,12 +85,8 @@ export interface FrameInfo {
 }
 
 // todo 后续拓展
-export interface LayerData {
-
-}
-export interface AudioData {
-
-}
+export interface LayerData {}
+export interface AudioData {}
 /**帧节点数据 */
 /**图层数据；音频数据 */
 export type FrameNodeData = LayerData | AudioData
@@ -187,9 +183,9 @@ export interface FrameRenderNode<T = null, K = null> {
   /**唯一标识 */
   nid: string
   /**数据 */
-  data: FrameNode<LayerData>,
+  data: FrameNode<LayerData>
   /**渲染节点容器 */
-  container: Konva.Group | Konva.Text,
+  container: Konva.Group | Konva.Text
   /**渲染节点核心控制器：pag渲染，图片渲染等会用到 */
   // coreProcess: T
   /**节点所需要的素材：扩展字段，暂时无用 */

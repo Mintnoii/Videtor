@@ -1,7 +1,7 @@
-import Konva from "konva"
-import {EventEmitter, IKonvaEventEmitter} from '@/libs'
+import Konva from 'konva'
+import { EventEmitter, IKonvaEventEmitter } from '@/libs'
 import ImageRenderer from '@/modules/img-renderer'
-import {createStageAndLayer} from '@/utils'
+import { createStageAndLayer } from '@/utils'
 
 export class Renderer {
   static RenderEvent = {
@@ -30,13 +30,13 @@ export class Renderer {
   layer!: Konva.Layer
   /**
    * 初始化 renderer
-   * @param target 
-   * @param viewPortSize 
-   * @param transformerConfig 
-   * @returns 
+   * @param target
+   * @param viewPortSize
+   * @param transformerConfig
+   * @returns
    */
-    init(
-    target: HTMLDivElement,
+  init(
+    target: HTMLDivElement
     // viewPortSize: ViewPortSize,
     // transformerConfig: TransformerConfig = {
     //   rotateEnabled: true,
@@ -67,16 +67,16 @@ export class Renderer {
     this._isInited = true
   }
 
-    private initStageAndLayer() {
-      const {stage, layer} = createStageAndLayer({
-        target: this.target,
-        configSize: [600, 600]
-      })
+  private initStageAndLayer() {
+    const { stage, layer } = createStageAndLayer({
+      target: this.target,
+      configSize: [600, 600]
+    })
     this.stage = stage
     this.layer = layer
     this.stage.add(this.layer)
 
-    // todo 
+    // todo
     // this.fitStageIntoParentContainer()
     // this._fitFn = this.fitStageIntoParentContainer.bind(this)
     // window.addEventListener('resize', this._fitFn)
@@ -92,7 +92,7 @@ export class Renderer {
   //   frame: number,
   //   isLazy: boolean = true,
   //   excludedTypes: Array<SegmentNodeDataType> = []
-  async render(frameInfo:any) {
+  async render(frameInfo: any) {
     console.log('render')
     if (!this.stage || !this.layer) {
       return
@@ -100,40 +100,40 @@ export class Renderer {
     const that = this
     // var width = window.innerWidth;
     //   var height = window.innerHeight;
-    
-      var imageObj = new Image();
-      imageObj.onload = function() {
-        var yoda = new Konva.Image({
-          x: 50,
-          y: 50,
-          image: imageObj,
-          width: 106,
-          height: 118
-        });
 
-        // add the shape to the layer
-        that.layer.add(yoda);
-        that.layer.batchDraw();
-      };
-      imageObj.src = frameInfo.url
+    var imageObj = new Image()
+    imageObj.onload = function () {
+      var yoda = new Konva.Image({
+        x: 50,
+        y: 50,
+        image: imageObj,
+        width: 106,
+        height: 118
+      })
+
+      // add the shape to the layer
+      that.layer.add(yoda)
+      that.layer.batchDraw()
+    }
+    imageObj.src = frameInfo.url
   }
-// const renderElements = (nodes: UIEventNode[]) => {
-//   setTransformerNodes([])
-//   hideKonvaElements()
-//   // 初始化数据
-//   calcInitialNode(nodes)
-//   const { newNodes, replaceNodes, updateAttrNodes } = groupByDataMap(nodes)
-//   newNodes.length && console.log(newNodes, '画布未有元素 => 新增元素')
-//   newNodes.forEach((node) => addElement(node))
+  // const renderElements = (nodes: UIEventNode[]) => {
+  //   setTransformerNodes([])
+  //   hideKonvaElements()
+  //   // 初始化数据
+  //   calcInitialNode(nodes)
+  //   const { newNodes, replaceNodes, updateAttrNodes } = groupByDataMap(nodes)
+  //   newNodes.length && console.log(newNodes, '画布未有元素 => 新增元素')
+  //   newNodes.forEach((node) => addElement(node))
 
-//   updateAttrNodes.length && console.log(updateAttrNodes, '画布已有元素 => 只更新属性')
-//   updateAttrNodes.forEach((node) => updateElementAttrs(node))
+  //   updateAttrNodes.length && console.log(updateAttrNodes, '画布已有元素 => 只更新属性')
+  //   updateAttrNodes.forEach((node) => updateElementAttrs(node))
 
-//   replaceNodes.length && console.log(replaceNodes, '画布已有元素 => 替换元素')
-//   replaceNodes.forEach((node) => replaceElement(node))
+  //   replaceNodes.length && console.log(replaceNodes, '画布已有元素 => 替换元素')
+  //   replaceNodes.forEach((node) => replaceElement(node))
 
-//   return nodes
-// }
+  //   return nodes
+  // }
   // stageScale: number = 1
 
   // rendererMap: {

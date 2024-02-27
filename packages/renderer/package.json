@@ -2,9 +2,10 @@
   "name": "@videtor/renderer",
   "version": "0.0.0",
   "description": "",
+  "author": "",
+  "license": "ISC",
   "main": "./dist/renderer.umd.js",
   "module": "./dist/renderer.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/renderer.umd.js",
@@ -12,13 +13,12 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "types": "./dist/index.d.ts",
+  "keywords": [],
   "scripts": {
     "build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "konva": "^9.3.3",
     "mitt": "^3.0.1"

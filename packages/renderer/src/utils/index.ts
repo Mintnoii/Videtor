@@ -51,29 +51,29 @@ export const caclContainerSize = (containerInfo: IContainerInfo) => {
 }
 
 export const createStageAndLayer = (containerInfo: IContainerInfo) => {
-    const containerSize = caclContainerSize(containerInfo)
-    const { width, height, scale } = containerSize
+  const containerSize = caclContainerSize(containerInfo)
+  const { width, height, scale } = containerSize
 
-    const customConfig: Konva.StageConfig = {
-      name: 'canvasStage',
-      container: containerInfo.target,
-      width: width,
-      height: height,
-      // 通过偏移，设置画布的中心点为坐标原点
-      offset: {
-        x: -width / 2,
-        y: -height / 2
-      },
-      scaleX: scale,
-      scaleY: scale
-    }
-
-    const stage = new Konva.Stage(customConfig)
-
-    const layer = new Konva.Layer({ name: 'canvasLayer' })
-    // stage.add(layer)
-    return {
-      stage,
-      layer
-    }
+  const customConfig: Konva.StageConfig = {
+    name: 'canvasStage',
+    container: containerInfo.target,
+    width: width,
+    height: height,
+    // 通过偏移，设置画布的中心点为坐标原点
+    offset: {
+      x: -width / 2,
+      y: -height / 2
+    },
+    scaleX: scale,
+    scaleY: scale
   }
+
+  const stage = new Konva.Stage(customConfig)
+
+  const layer = new Konva.Layer({ name: 'canvasLayer' })
+  // stage.add(layer)
+  return {
+    stage,
+    layer
+  }
+}

@@ -18,12 +18,30 @@
   })
 </script>
 
-<div>
-  素材
-  <div class="flex flex-wrap" style="width: 120px; height: 100px">
+<div class="container">
+  <div class="header">素材</div>
+  <div class="list" >
     {#each list as item}
-      <img src={item.download_url} alt={item.author} class="w-1/4" />
+      <img style="width: 120px; height: 100px; margin: 10px" src={item.download_url} alt={item.author} />
     {/each}
   </div>
 </div>
 
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.header {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>

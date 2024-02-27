@@ -1,6 +1,7 @@
 import Konva from "konva"
 import {EventEmitter, IKonvaEventEmitter} from '@/libs'
 import ImageRenderer from '@/modules/img-renderer'
+import {createStageAndLayer} from '@/utils'
 
 export class Renderer {
   static RenderEvent = {
@@ -23,7 +24,63 @@ export class Renderer {
   // private pagRenderer = new PagRenderer(this, this.eventDisapther)
   // private staticTempRenderer = new StaticTextTemplateRenderer(this, this.eventDisapther)
   // private videoRenderer = new VideoRenderer(this, this.eventDisapther)
+  target: HTMLDivElement
+  // viewPortSize: ViewPortSize
+  stage!: Konva.Stage
+  layer!: Konva.Layer
+  /**
+   * 初始化 renderer
+   * @param target 
+   * @param viewPortSize 
+   * @param transformerConfig 
+   * @returns 
+   */
+    init(
+    target: HTMLDivElement,
+    // viewPortSize: ViewPortSize,
+    // transformerConfig: TransformerConfig = {
+    //   rotateEnabled: true,
+    //   resizeEnabled: true
+    // }
+  ) {
+    // 已经初始化过了，不再初始化
+    if (this._isInited) {
+      return
+    }
 
+    // if (!target || !viewPortSize) {
+    //   return
+    // }
+
+    // if (transformerConfig) {
+    //   this.transformerConfig = transformerConfig
+    // }
+    this.target = target
+    // this.viewPortSize = viewPortSize
+
+    // this.animation = new Konva.Animation(() => {})
+    this.initStageAndLayer()
+    // this.animation.addLayer(this.layer)
+    // this.initTransformer()
+    // this.addEventListener()
+
+    this._isInited = true
+  }
+
+    private initStageAndLayer() {
+      const {stage, layer} = createStageAndLayer({
+        target: this.target,
+        configSize: [600, 600]
+      })
+    this.stage = stage
+    this.layer = layer
+    this.stage.add(this.layer)
+
+    // todo 
+    // this.fitStageIntoParentContainer()
+    // this._fitFn = this.fitStageIntoParentContainer.bind(this)
+    // window.addEventListener('resize', this._fitFn)
+  }
   /**
    *
    * @param segmentInfo
@@ -35,18 +92,15 @@ export class Renderer {
   //   frame: number,
   //   isLazy: boolean = true,
   //   excludedTypes: Array<SegmentNodeDataType> = []
-  async render() {
+  async render(frameInfo:any) {
     console.log('render')
+    if (!this.stage || !this.layer) {
+      return
+    }
+    const that = this
     // var width = window.innerWidth;
     //   var height = window.innerHeight;
-      var stage = new Konva.Stage({
-        container: 'container',
-        width: 600,
-        height: 600
-      });
-
-      var layer = new Konva.Layer();
-      stage.add(layer);
+    
       var imageObj = new Image();
       imageObj.onload = function() {
         var yoda = new Konva.Image({
@@ -58,10 +112,10 @@ export class Renderer {
         });
 
         // add the shape to the layer
-        layer.add(yoda);
-        layer.batchDraw();
+        that.layer.add(yoda);
+        that.layer.batchDraw();
       };
-      imageObj.src = 'https://test-minio.xmov.ai/xmov-dmp/youguang/v3/production/476_1700533809772_3135730058.png';
+      imageObj.src = frameInfo.url
   }
 // const renderElements = (nodes: UIEventNode[]) => {
 //   setTransformerNodes([])

@@ -1,20 +1,19 @@
 <script lang="ts">
 import { Renderer} from '@videtor/renderer'
 	import { onMount } from 'svelte';
-
-  let count: number = 0
-  const increment = () => {
-    count += 1
-  }
-
   onMount(() => {
+    const container = document.getElementById('container')
   const renderer = new Renderer()
-  renderer.render()
+  renderer.init(container as HTMLDivElement)
+  renderer.render({
+    url: 'https://picsum.photos/200/300'
+  })
   })
 </script>
 
 <div>
   画布
+      <div id="container"></div>
 </div>
 <!-- <button on:click={increment}>
   count is {count}

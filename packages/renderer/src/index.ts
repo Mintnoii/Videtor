@@ -97,13 +97,13 @@ export class Renderer {
     if (!this.stage || !this.layer) {
       return
     }
-    const that = this
+    const layer = this.layer
     // var width = window.innerWidth;
     //   var height = window.innerHeight;
 
-    var imageObj = new Image()
+    const imageObj = new Image()
     imageObj.onload = function () {
-      var yoda = new Konva.Image({
+      const yoda = new Konva.Image({
         x: 50,
         y: 50,
         image: imageObj,
@@ -112,8 +112,8 @@ export class Renderer {
       })
 
       // add the shape to the layer
-      that.layer.add(yoda)
-      that.layer.batchDraw()
+      layer.add(yoda)
+      layer.batchDraw()
     }
     imageObj.src = frameInfo.url
   }

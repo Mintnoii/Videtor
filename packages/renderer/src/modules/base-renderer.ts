@@ -1,5 +1,5 @@
 import Konva from 'konva'
-import { IRenderNode, SegmentRenderNode, IRenderInfo, LayerData } from '@/types'
+import { ElementNode, RenderNode, IRenderInfo, LayerData } from '@/types'
 import { EventEmitter, IKonvaEventEmitter } from '@/libs'
 
 export interface RendererFrameInfo {
@@ -12,7 +12,7 @@ export interface RendererFrameInfo {
   // 渲染 transformer
   // transformer: Konva.Transformer
   // 渲染数据
-  segmentNodes: Array<SegmentRenderNode<LayerData>>
+  segmentNodes: Array<RenderNode<LayerData>>
 }
 
 export default abstract class BaseRenderer {
@@ -35,16 +35,20 @@ export default abstract class BaseRenderer {
     this.eventEmitter = eventEmitter
   }
   /**创建renderNode */
-  protected createRenderNode(frameNode: SegmentRenderNode<LayerData>): IRenderNode<any, any> {
+  protected createNode(renderNode: RenderNode<LayerData>) {
     const node = {
-      nid: frameNode.nid,
-      data: frameNode,
+      // nid: renderNode.nid,
+      // data: renderNode.data,
+      ...renderNode,
       container: new Konva.Group()
       // coreProcess: null,
       // assets: null
     }
     return node
   }
+
+  /**异步填充renderNode */
+  protected async fillRenderNode(renderNode: any): Promise<any> {}
 
   // async draw(renderInfo: RendererFrameInfo) {
   //   this.curRenderInfo = renderInfo
@@ -67,28 +71,44 @@ export default abstract class BaseRenderer {
     this.curLayer = this.curDrawInfo.layer
     // this.curTransformer = this.curDrawInfo.transformer
 
-    const allPromises = []
-
-    // 这里不能在for循环中await，因为在lazy渲染时，是不会等待draw的过程，所以先收集promise，最后返回promise all
-    for (const node of this.curDrawInfo.segmentNodes) {
-      allPromises.push(this.drawRenderNode(node, notFill))
-    }
+    const allPromises: any[] = []
+    // 不能在forEach中await，因为在lazy渲染时，是不会等待draw的过程，所以先收集promise，最后返回promise all
+    this.curDrawInfo.segmentNodes.forEach((node) => {
+      allPromises.push(this.drawNode(node, notFill))
+    })
 
     return Promise.all(allPromises)
   }
-  async drawRenderNode(renderNode: SegmentRenderNode<LayerData>, notFill: boolean = false) {
+
+  // asyncGenElements = async (nodes: UIEventNode[], groups: Konva.Group[]) => {
+  //   const toHandleElements = groups
+  //     .map((group) => {
+  //       const node = nodes.find((node) => node.nid === group.id()) || null
+  //       return { node, group }
+  //     })
+  //     .filter((item) => item.node !== null) as { node: UIEventNode; group: Konva.Group }[]
+  //   const promises = toHandleElements.map(({ node, group }) => asyncGenElement(node, group))
+  //   const results = await Promise.allSettled(promises)
+  //   return results
+  //     .map((item) => (item.status === 'fulfilled' && item.value ? item.value : undefined))
+  //     .filter((item) => item !== undefined) as Group[]
+  // }
+
+  async drawNode(renderNode: RenderNode<LayerData>, notFill: boolean = false) {
     // trackLogsStart(LOGS_TYPE.beforeFillWork)
     // let renderNode = this.cacheRenderNodeMap.get(segmentNode.nid)
+    let node = null
     console.log(renderNode, 'renderNode')
     // 创建
-    // if (!renderNode) {
-    //   renderNode = this.createRenderNode(segmentNode as SegmentNode<LayerData>)
-    //   const nodeContainer: Konva.Group | Konva.Text = renderNode.container
-    //   nodeContainer.id(renderNode.nid)
-    //   nodeContainer.draggable(!renderNode.data.disabled)
-    //   this.cacheRenderNodeMap.set(segmentNode.nid, renderNode)
-    //   this.addElementEventListener(nodeContainer)
-    // }
+    if (!node) {
+      node = this.createNode(renderNode)
+      const nodeContainer: Konva.Group | Konva.Text = node.container
+      nodeContainer.id(renderNode.nid)
+      // nodeContainer.draggable(!renderNode.data.disabled)
+      // this.cacheRenderNodeMap.set(segmentNode.nid, renderNode)
+      // this.addElementEventListener(nodeContainer)
+    }
+    this.curLayer.add(node.container)
 
     // 首先更新数据
     // renderNode.data = segmentNode
@@ -111,6 +131,7 @@ export default abstract class BaseRenderer {
 
     // trackLogsEnd(LOGS_TYPE.beforeFillWork)
     // 异步填充
+    this.fillRenderNode(node)
     // if (!notFill) {
     //   // 异步填充（如果懒绘制则无需等待绘制结果）
     //   if (this.curDrawIsLazy) {

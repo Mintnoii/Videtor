@@ -1,5 +1,5 @@
 import Konva from 'konva'
-
+export * from './element'
 export interface IContainerInfo {
   target: HTMLDivElement
   configSize: number[]

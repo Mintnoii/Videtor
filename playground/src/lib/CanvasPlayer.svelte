@@ -11,11 +11,13 @@ import { Renderer } from '@videtor/renderer'
     }
   })
   renderer.render({
-    children: [{
+    elements: [{
       nid:'121212',
       data: {
-        type: 'widget_image',
-    url: 'https://picsum.photos/200/300',
+      type: 'widget_image',
+      url: 'https://picsum.photos/200/300',
+      width: 200,
+      height: 300,
       }
       
   }]

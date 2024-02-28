@@ -1,3 +1,4 @@
+import Konva from 'konva'
 /**
  * 节点的data类型
  * data类型和该节点的渲染方式息息相关
@@ -138,10 +139,10 @@ export type LayerData = WidgetData
 export type RenderNodeData = LayerData
 
 /**
- * 片段节点：一段SegmentInfo中，是片段生存空间信息+诸多片段节点的合集
+ * 片段节点：一段 RenderInfo中，是片段生存空间信息+诸多片段节点的合集
  * 一个片段节点清晰的记录了该节点所在的层级，以及他的生命周期，节点属性等数据
  */
-export interface SegmentRenderNode<T extends RenderNodeData = RenderNodeData> {
+export interface RenderNode<T extends RenderNodeData = RenderNodeData> {
   /**
    * 节点唯一标识
    */
@@ -225,18 +226,27 @@ export interface SegmentRenderNode<T extends RenderNodeData = RenderNodeData> {
 /**
  * 渲染器所持有的渲染节点类型
  */
-export interface IRenderNode<T = null, K = null> {
+export interface ElementNode {
   /**唯一标识 */
   nid: string
   /**数据 */
-  data: SegmentRenderNode<LayerData>
+  data: RenderNode<LayerData>
   /**渲染节点容器 */
-  // container: Konva.Group | Konva.Text
-  /**渲染节点核心控制器：pag渲染，图片渲染等会用到 */
-  // coreProcess: T
-  /**节点所需要的素材：扩展字段，暂时无用 */
-  // assets: K
-
-  /**节点是否被损坏了 */
-  // isDestroyed?: boolean
+  container: Konva.Group | Konva.Text
 }
+
+// export interface ElementNode<T = null, K = null> {
+//   /**唯一标识 */
+//   nid: string
+//   /**数据 */
+//   data: RenderNode<LayerData>
+//   /**渲染节点容器 */
+//   // container: Konva.Group | Konva.Text
+//   /**渲染节点核心控制器：pag渲染，图片渲染等会用到 */
+//   // coreProcess: T
+//   /**节点所需要的素材：扩展字段，暂时无用 */
+//   // assets: K
+
+//   /**节点是否被损坏了 */
+//   // isDestroyed?: boolean
+// }

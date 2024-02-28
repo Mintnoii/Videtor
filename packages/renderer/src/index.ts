@@ -3,14 +3,7 @@ import { EventEmitter, IKonvaEventEmitter } from '@/libs'
 import BaseRenderer from '@/modules/base-renderer'
 import ImageRenderer from '@/modules/img-renderer'
 import { createStageAndLayer } from '@/utils'
-import {
-  ViewPortSize,
-  IRenderInfo,
-  IRenderNode,
-  NodeType,
-  SegmentRenderNode,
-  LayerData
-} from '@/types'
+import { ViewPortSize, IRenderInfo, ElementNode, NodeType, RenderNode, LayerData } from '@/types'
 export class Renderer {
   static RenderEvent = {
     updateNode: 'updateNode',
@@ -129,23 +122,22 @@ export class Renderer {
 
     // 清理画布
     // this.removeAll(excludedTypes)
-    // 找到当前帧需要渲染的节点
-    // const arr: Array<SegmentNode> = getSegmentNodesFromFrame(segmentInfo, frame)
-    for (const key of Object.keys(this.rendererMap)) {
-      const arr: SegmentRenderNode[] = renderInfo.children
-      const renderList = arr.filter((segmentNode) => {
+    // 分发渲染节点到不同的渲染器上进行绘制
+    Object.keys(this.rendererMap).forEach((key) => {
+      // 找到当前帧需要渲染的节点
+      // const arr: Array<SegmentNode> = getSegmentNodesFromFrame(segmentInfo, frame)
+      const renderer = this.rendererMap[key]
+      const renderList = renderInfo.elements.filter((segmentNode) => {
         return segmentNode.data.type === key
       })
-      // 图片渲染器
-      const renderer = this.rendererMap[NodeType.widget_image]
       renderer.draw({
         renderInfo,
         frameIndex: frame,
         layer: this.layer,
         // transformer: this.transformer,
-        segmentNodes: renderList as Array<SegmentRenderNode<LayerData>>
+        segmentNodes: renderList as Array<RenderNode<LayerData>>
       })
-    }
+    })
 
     // // 分发渲染节点到不同的渲染器上进行绘制
     // for (let key of Object.keys(this.rendererMap)) {

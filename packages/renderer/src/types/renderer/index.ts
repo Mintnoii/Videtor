@@ -1,8 +1,8 @@
-import { IRenderNode, SegmentRenderNode, LayerData } from './node'
+import { ElementNode, RenderNode, LayerData, WidgetImageData } from './node'
 export { NodeType } from './node'
 
-export type { IRenderNode, SegmentRenderNode, LayerData }
+export type { ElementNode, RenderNode, LayerData, WidgetImageData }
 
 export interface IRenderInfo {
-  children: SegmentRenderNode[]
+  elements: RenderNode[]
 }

@@ -1,8 +1,16 @@
 import Konva from 'konva'
 import { EventEmitter, IKonvaEventEmitter } from '@/libs'
+import BaseRenderer from '@/modules/base-renderer'
 import ImageRenderer from '@/modules/img-renderer'
 import { createStageAndLayer } from '@/utils'
-
+import {
+  ViewPortSize,
+  IRenderInfo,
+  IRenderNode,
+  NodeType,
+  SegmentRenderNode,
+  LayerData
+} from '@/types'
 export class Renderer {
   static RenderEvent = {
     updateNode: 'updateNode',
@@ -25,9 +33,27 @@ export class Renderer {
   // private staticTempRenderer = new StaticTextTemplateRenderer(this, this.eventDisapther)
   // private videoRenderer = new VideoRenderer(this, this.eventDisapther)
   target: HTMLDivElement
-  // viewPortSize: ViewPortSize
+  viewPortSize: ViewPortSize
   stage!: Konva.Stage
   layer!: Konva.Layer
+
+  rendererMap: {
+    [propStr: string]: BaseRenderer
+  } = {
+    // [SegmentNodeDataType.scene]: new SceneRender(this, this.eventDisapther),
+
+    [NodeType.widget_image]: this.imageRenderer
+    // [SegmentNodeDataType.role]: this.roleRenderer,
+    // [SegmentNodeDataType.widget_text]: this.textRenderer
+    // [SegmentNodeDataType.head_pag]: this.pagRenderer,
+    // [SegmentNodeDataType.tail_pag]: this.pagRenderer,
+    // [SegmentNodeDataType.widget_text_pag]: this.pagRenderer,
+    // [SegmentNodeDataType.widget_text_static_tempate]: this.staticTempRenderer,
+    // [SegmentNodeDataType.caption]: this.staticTempRenderer,
+    // [SegmentNodeDataType.widget_video]: this.videoRenderer
+    // [SegmentNodeDataType.widget_text_template]: new TextTemplateRenderer(),
+  }
+
   /**
    * 初始化 renderer
    * @param target
@@ -36,7 +62,10 @@ export class Renderer {
    * @returns
    */
   init(
-    target: HTMLDivElement
+    target: HTMLDivElement,
+    options: {
+      viewPortSize: ViewPortSize
+    }
     // viewPortSize: ViewPortSize,
     // transformerConfig: TransformerConfig = {
     //   rotateEnabled: true,
@@ -48,15 +77,15 @@ export class Renderer {
       return
     }
 
-    // if (!target || !viewPortSize) {
-    //   return
-    // }
+    if (!target || !options.viewPortSize) {
+      return
+    }
 
     // if (transformerConfig) {
     //   this.transformerConfig = transformerConfig
     // }
     this.target = target
-    // this.viewPortSize = viewPortSize
+    this.viewPortSize = options.viewPortSize
 
     // this.animation = new Konva.Animation(() => {})
     this.initStageAndLayer()
@@ -70,7 +99,7 @@ export class Renderer {
   private initStageAndLayer() {
     const { stage, layer } = createStageAndLayer({
       target: this.target,
-      configSize: [600, 600]
+      configSize: [this.viewPortSize.width, this.viewPortSize.height]
     })
     this.stage = stage
     this.layer = layer
@@ -83,39 +112,88 @@ export class Renderer {
   }
   /**
    *
-   * @param segmentInfo
-   * @param frame
-   * @param isLazy 是否预加载片头片尾主视频等大资源
+   * @param renderInfo 渲染的信息
    * @returns
    */
-  //  segmentInfo: SegmentInfo,
-  //   frame: number,
-  //   isLazy: boolean = true,
-  //   excludedTypes: Array<SegmentNodeDataType> = []
-  async render(frameInfo: any) {
-    console.log('render')
+  async render(renderInfo: IRenderInfo, frame: number) {
     if (!this.stage || !this.layer) {
       return
     }
-    const layer = this.layer
-    // var width = window.innerWidth;
-    //   var height = window.innerHeight;
 
-    const imageObj = new Image()
-    imageObj.onload = function () {
-      const yoda = new Konva.Image({
-        x: 50,
-        y: 50,
-        image: imageObj,
-        width: 106,
-        height: 118
+    // 如果片段duration是-1，那么animation启动，自动驱动绘制，duration为-1时，gif，apng等需要自动播放，此时需要一个animation自动驱动
+    // if (segmentInfo.duration === INFINITE_DURATION) {
+    //   this.animation.start()
+    // } else {
+    //   this.animation.stop()
+    // }
+
+    // 清理画布
+    // this.removeAll(excludedTypes)
+    // 找到当前帧需要渲染的节点
+    // const arr: Array<SegmentNode> = getSegmentNodesFromFrame(segmentInfo, frame)
+    for (const key of Object.keys(this.rendererMap)) {
+      const arr: SegmentRenderNode[] = renderInfo.children
+      const renderList = arr.filter((segmentNode) => {
+        return segmentNode.data.type === key
       })
-
-      // add the shape to the layer
-      layer.add(yoda)
-      layer.batchDraw()
+      // 图片渲染器
+      const renderer = this.rendererMap[NodeType.widget_image]
+      renderer.draw({
+        renderInfo,
+        frameIndex: frame,
+        layer: this.layer,
+        // transformer: this.transformer,
+        segmentNodes: renderList as Array<SegmentRenderNode<LayerData>>
+      })
     }
-    imageObj.src = frameInfo.url
+
+    // // 分发渲染节点到不同的渲染器上进行绘制
+    // for (let key of Object.keys(this.rendererMap)) {
+    //   const renderer = this.rendererMap[key]
+    //   // 如果没找到渲染器或者该类型的数据被排除渲染，则跳过
+    //   if (
+    //     !renderer ||
+    //     excludedTypes.some((type) => {
+    //       return type === key
+    //     })
+    //   ) {
+    //     continue
+    //   }
+    //   const renderList = arr.filter((segmentNode) => {
+    //     return segmentNode.data.type === key
+    //   })
+    //   if (isLazy) {
+    //     renderer.draw(
+    //       {
+    //         segmentInfo,
+    //         renderFrameNum: frame,
+    //         layer: this.layer,
+    //         transformer: this.transformer,
+    //         segmentNodes: renderList as Array<SegmentNode<LayerData>>
+    //       },
+    //       isLazy
+    //     )
+    //   } else {
+    //     await renderer.draw(
+    //       {
+    //         segmentInfo,
+    //         renderFrameNum: frame,
+    //         layer: this.layer,
+    //         transformer: this.transformer,
+    //         segmentNodes: renderList as Array<SegmentNode<LayerData>>
+    //       },
+    //       isLazy
+    //     )
+    //   }
+    // }
+
+    // // 重新设置transformer TODO 这里要稍微加个延迟，防止transformer时，active节点transform不成功：具体原因待排查
+    // setTimeout(() => {
+    //   this.rehandleTransformerNode()
+    // }, 100)
+
+    // // sort elements
+    // this.sortLayerElements()
   }
   // const renderElements = (nodes: UIEventNode[]) => {
   //   setTransformerNodes([])

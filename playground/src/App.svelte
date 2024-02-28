@@ -10,7 +10,9 @@
     <div class="material">
       <Material  />
     </div>
-    <CanvasPlayer />
+    <div class="canvasBox">
+      <CanvasPlayer />
+    </div>
     <!-- <a href="https://svelte.dev" target="_blank" rel="noreferrer">
       svelte
     </a> -->
@@ -30,4 +32,9 @@
       background-color: #f0f0f0;
       display: flex;
     }
+  .canvasBox {
+    width: 420px;
+    height: 630px;
+    background-color: aliceblue;
+  }
 </style>

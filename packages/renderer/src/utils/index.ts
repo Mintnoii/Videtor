@@ -52,6 +52,7 @@ export const caclContainerSize = (containerInfo: IContainerInfo) => {
 
 export const createStageAndLayer = (containerInfo: IContainerInfo) => {
   const containerSize = caclContainerSize(containerInfo)
+  console.log(containerSize, 'containerSize')
   const { width, height, scale } = containerSize
 
   const customConfig: Konva.StageConfig = {

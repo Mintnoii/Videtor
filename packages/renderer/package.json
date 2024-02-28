@@ -16,7 +16,7 @@
   "types": "./dist/index.d.ts",
   "keywords": [],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

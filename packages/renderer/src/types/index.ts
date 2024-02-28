@@ -1,1 +1,2 @@
-export * from './frameInfo'
+export * from './config'
+export * from './renderer'

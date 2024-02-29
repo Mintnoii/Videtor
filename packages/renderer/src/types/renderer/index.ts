@@ -1,7 +1,9 @@
-import { ElementNode, RenderNode, LayerData, WidgetImageData } from './node'
+import { RenderNode, LayerData } from './node'
 export { NodeType } from './node'
+export * from './node'
+export * from './sprite'
 
-export type { ElementNode, RenderNode, LayerData, WidgetImageData }
+// export type { RenderNode, LayerData }
 
 export interface IRenderInfo {
   elements: RenderNode[]

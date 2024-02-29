@@ -1,4 +1,3 @@
-import Konva from 'konva'
 /**
  * 节点的data类型
  * data类型和该节点的渲染方式息息相关
@@ -149,6 +148,19 @@ export interface RenderNode<T extends RenderNodeData = RenderNodeData> {
   nid: string
 
   /**
+   * 注：data中所有有涉及到时间的字段（这些字段的单位不受segmentInfo中的timelineUnit这些所控制），
+   *    其单位默认都为毫秒，如果设置了FPS，则单位为帧。
+   *
+   * 节点数据（描述节点本身特性的数据，用来渲染图像或者用来播放）：
+   * 分为layerData（能以图像的形式展现在屏幕上），audioData（能以音频的方式出现）
+   * layerData：
+   *    通用属性（x,y,rotation,scale,width,height,alpha等）
+   *    特有属性（譬如widget_text_pag，则有pagNodes等属性，widget_image，则有mask，background等属性）
+   * audioData：
+   *    音频相关属性
+   */
+  data: T
+  /**
    * 节点处在哪个轴上
    * 节点的轴类型一般控制节点在轴上应该处在什么位置以及轴所在层级以及能出现多少个相同类型的轴。
    * 譬如片头片尾轴，该轴只能出现1次，且片头片尾的顺序也被限制，轴的层级也相对受限，其本身的data数据是pag相关的数据，但是将其放在片头片尾上，
@@ -202,51 +214,9 @@ export interface RenderNode<T extends RenderNodeData = RenderNodeData> {
   // duration: number
 
   /**
-   * 注：data中所有有涉及到时间的字段（这些字段的单位不受segmentInfo中的timelineUnit这些所控制），
-   *    其单位默认都为毫秒，如果设置了FPS，则单位为帧。
-   *
-   * 节点数据（描述节点本身特性的数据，用来渲染图像或者用来播放）：
-   * 分为layerData（能以图像的形式展现在屏幕上），audioData（能以音频的方式出现）
-   * layerData：
-   *    通用属性（x,y,rotation,scale,width,height,alpha等）
-   *    特有属性（譬如widget_text_pag，则有pagNodes等属性，widget_image，则有mask，background等属性）
-   * audioData：
-   *    音频相关属性
-   */
-  data: T
-
-  /**
    * 在不同上下文结构中，用来存放一些业务上下文相关的其他字段
    * 举个例子：
    *    譬如ssml转为segmentInfo时，一些ssml中的冗余字段可以放到这里，方便transform回去的时候再塞到ssml中
    */
   // extraData?: any
 }
-
-/**
- * 渲染器所持有的渲染节点类型
- */
-export interface ElementNode {
-  /**唯一标识 */
-  nid: string
-  /**数据 */
-  data: RenderNode<LayerData>
-  /**渲染节点容器 */
-  container: Konva.Group | Konva.Text
-}
-
-// export interface ElementNode<T = null, K = null> {
-//   /**唯一标识 */
-//   nid: string
-//   /**数据 */
-//   data: RenderNode<LayerData>
-//   /**渲染节点容器 */
-//   // container: Konva.Group | Konva.Text
-//   /**渲染节点核心控制器：pag渲染，图片渲染等会用到 */
-//   // coreProcess: T
-//   /**节点所需要的素材：扩展字段，暂时无用 */
-//   // assets: K
-
-//   /**节点是否被损坏了 */
-//   // isDestroyed?: boolean
-// }

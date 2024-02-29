@@ -1,40 +1,38 @@
 import type { AbstractClass } from 'type-fest'
 import Konva from 'konva'
-import { RenderNode, WidgetImageData, ElementNode } from '@/types'
-// // 定义一个抽象类
+import { RenderNode, WidgetImageData } from '@/types'
+// 定义一个抽象类
 // abstract class Animal {
 //     abstract makeSound(): void;
 // }
 
-// // 定义一个类 Dog 继承自抽象类 Animal
+// 定义一个类 Dog 继承自抽象类 Animal
 // class Dog extends Animal {
 //     makeSound(): void {
 //         console.log('Woof! Woof!');
 //     }
 // }
 
-// // 创建 Dog 类的实例
+// 创建 Dog 类的实例
 // const myDog = new Dog();
 // myDog.makeSound(); // 输出: Woof! Woof!
 import BaseRenderer from './base-renderer'
 import { genImageElement } from '@/modules/elements'
 export default class ImageRenderer extends BaseRenderer {
-  protected createNode(renderNode: RenderNode<WidgetImageData>) {
-    const node = super.createNode(renderNode)
+  protected createSprite(renderNode: RenderNode<WidgetImageData>) {
+    const sprite = super.createSprite(renderNode)
     const group = new Konva.Group({
       id: renderNode.nid,
-      x: 50,
-      y: 50,
       width: renderNode.data.width,
       height: renderNode.data.height
     })
-    node.container = group
+    sprite.container = group
     // node.coreProcess = new ImageProcess(renderNode.data.url, renderNode, {
     //   layer: this.curLayer,
     //   group: group
     // })
-    console.log(node, 'imageNode')
-    return node
+    console.log(sprite, 'imageSprite')
+    return sprite
   }
   protected async fillRenderNode(node: any, isLazy: boolean = false): Promise<void> {
     // let process = renderNode.coreProcess

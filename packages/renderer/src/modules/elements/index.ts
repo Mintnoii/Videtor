@@ -7,6 +7,8 @@ export const genImageElement = async (url: string, layer: Konva.Layer, container
   const imgNode = new Konva.Image({
     image: new Image(),
     name: 'imageNode',
+    x: 0,
+    y: 0,
     width: width,
     height: height
   })

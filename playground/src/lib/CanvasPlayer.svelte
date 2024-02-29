@@ -18,6 +18,8 @@ import { Renderer } from '@videtor/renderer'
       url: 'https://picsum.photos/200/300',
       width: 200,
       height: 300,
+      x:0,
+      y:-150,
       }
       
   }]

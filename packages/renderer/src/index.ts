@@ -3,7 +3,7 @@ import { EventEmitter, IKonvaEventEmitter } from '@/libs'
 import BaseRenderer from '@/modules/base-renderer'
 import ImageRenderer from '@/modules/img-renderer'
 import { createStageAndLayer } from '@/utils'
-import { ViewPortSize, IRenderInfo, ElementNode, NodeType, RenderNode, LayerData } from '@/types'
+import { ViewPortSize, IRenderInfo, NodeType, RenderNode, LayerData } from '@/types'
 export class Renderer {
   static RenderEvent = {
     updateNode: 'updateNode',
@@ -108,7 +108,7 @@ export class Renderer {
    * @param renderInfo 渲染的信息
    * @returns
    */
-  async render(renderInfo: IRenderInfo, frame: number) {
+  async render(renderInfo: IRenderInfo, frameIndex: number) {
     if (!this.stage || !this.layer) {
       return
     }
@@ -132,7 +132,7 @@ export class Renderer {
       })
       renderer.draw({
         renderInfo,
-        frameIndex: frame,
+        frameIndex,
         layer: this.layer,
         // transformer: this.transformer,
         segmentNodes: renderList as Array<RenderNode<LayerData>>

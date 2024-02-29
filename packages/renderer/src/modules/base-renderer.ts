@@ -1,6 +1,6 @@
 import Konva from 'konva'
-import { ElementNode, RenderNode, IRenderInfo, LayerData } from '@/types'
 import { EventEmitter, IKonvaEventEmitter } from '@/libs'
+import { RenderNode, IRenderInfo, LayerData, Sprite } from '@/types'
 
 export interface RendererFrameInfo {
   // 片段信息
@@ -34,19 +34,85 @@ export default abstract class BaseRenderer {
     this.renderer = renderer
     this.eventEmitter = eventEmitter
   }
-  /**创建renderNode */
-  protected createNode(renderNode: RenderNode<LayerData>) {
-    const node = {
-      // nid: renderNode.nid,
-      // data: renderNode.data,
+
+  protected createSprite(renderNode: RenderNode<LayerData>): Sprite {
+    return {
       ...renderNode,
+      // container: new Konva.Group({
+      //   offsetX: renderNode.data.width / 2,
+      //   offsetY: renderNode.data.height / 2
+      // })
       container: new Konva.Group()
       // coreProcess: null,
       // assets: null
     }
-    return node
   }
 
+  /**用data数据更新 sprite */
+  private updateAttrs(sprite: Sprite) {
+    console.log(sprite, 'updateAttrs = sprite')
+    const { data, container } = sprite
+    // const renderNode = sprite.data
+    // 如果是文本节点，且文本节点的高度是自动计算的，那么height设置为undefined
+    // if (segmentUtils.isAutoHeightSingleTextSegmentNode(renderNode)) {
+    //   height = undefined
+    // }
+
+    container.setAttrs({
+      // renderNode: sprite,
+      renderNodeType: data.type,
+      // axisId: renderNode.axisId,
+      // zIndex: renderNode.axisId,
+      // visible: renderNode.visible,
+      // disabled: renderNode.disabled,
+
+      x: data.x,
+      y: data.y,
+      width: data.width,
+      // 纯文本节点不设置高度
+      height: data.height,
+      scaleX: data.scale,
+      scaleY: data.scale,
+      rotation: data.rotation,
+      opacity: data.alpha
+    })
+
+    // 如果是场景，片头片尾则不允许拖拽（这里理解可以将片头片尾理解为场景）
+    // if (
+    //   renderNode.data.type === SegmentNodeDataType.head_pag ||
+    //   renderNode.data.type === SegmentNodeDataType.tail_pag ||
+    //   renderNode.data.type === SegmentNodeDataType.scene
+    // ) {
+    //   element.draggable(false)
+    // } else {
+    //   element.draggable(!renderNode.disabled)
+    // }
+  }
+  // 只对第一层做offset即可
+  private layoutSprite(item: Konva.Node) {
+    if (!item) {
+      return
+    }
+    const width = item.width()
+    const height = item.height()
+    if (width) {
+      item.offsetX(width / 2)
+    } else {
+      // EditorLog.warn('setItemOffset:元素宽度为空:', item.width(), item)
+    }
+    if (height) {
+      item.offsetY(height / 2)
+    } else {
+      // EditorLog.warn('setItemOffset:元素高度为空:', item.height(), item)
+    }
+    // console.log('offsetX:', item.getAttr('offsetX'))
+    // if (item.hasChildren()) {
+    //   const children = (item as Konva.Group).getChildren()
+    //   for (let i = 0; i < children.length; ++i) {
+    //     this.setElementOffset(children[i])
+    //   }
+    // }
+  }
   /**异步填充renderNode */
   protected async fillRenderNode(renderNode: any): Promise<any> {}
 
@@ -74,7 +140,7 @@ export default abstract class BaseRenderer {
     const allPromises: any[] = []
     // 不能在forEach中await，因为在lazy渲染时，是不会等待draw的过程，所以先收集promise，最后返回promise all
     this.curDrawInfo.segmentNodes.forEach((node) => {
-      allPromises.push(this.drawNode(node, notFill))
+      allPromises.push(this.drawSprite(node, notFill))
     })
 
     return Promise.all(allPromises)
@@ -93,56 +159,24 @@ export default abstract class BaseRenderer {
   //     .map((item) => (item.status === 'fulfilled' && item.value ? item.value : undefined))
   //     .filter((item) => item !== undefined) as Group[]
   // }
-
-  async drawNode(renderNode: RenderNode<LayerData>, notFill: boolean = false) {
-    // trackLogsStart(LOGS_TYPE.beforeFillWork)
-    // let renderNode = this.cacheRenderNodeMap.get(segmentNode.nid)
-    let node = null
-    console.log(renderNode, 'renderNode')
-    // 创建
-    if (!node) {
-      node = this.createNode(renderNode)
-      const nodeContainer: Konva.Group | Konva.Text = node.container
+  async drawSprite(renderNode: RenderNode<LayerData>, notFill: boolean = false) {
+    let sprite = null
+    console.log(renderNode, 'drawSprite - renderNode')
+    if (!sprite) {
+      sprite = this.createSprite(renderNode)
+      const nodeContainer: Konva.Group | Konva.Text = sprite.container
       nodeContainer.id(renderNode.nid)
       // nodeContainer.draggable(!renderNode.data.disabled)
-      // this.cacheRenderNodeMap.set(segmentNode.nid, renderNode)
+      // this.cacheRenderNodeMap.set(renderNode.nid, renderNode)
       // this.addElementEventListener(nodeContainer)
     }
-    this.curLayer.add(node.container)
-
     // 首先更新数据
-    // renderNode.data = segmentNode
-    // const nodeContainer: Konva.Group | Konva.Text = renderNode.container
-    // this.setElementOffset(nodeContainer)
-
+    // sprite.data = renderNode
+    this.layoutSprite(sprite.container)
     // 更新
-    // this.updateRenderNodeAttrs(renderNode)
-    // if (renderNode.isDestroyed) {
-    //   // 更新完renderNode数据之后，如果发现节点被损坏了，那么直接终止后续异步渲染填充
-    //   return this.drawSegmentNode(segmentNode, notFill)
-    // }
+    this.updateAttrs(sprite)
 
-    // if (judgeSegmentNodeIsInFrame(segmentNode, this.curRenderFrame)) {
-    //   this.curLayer.add(nodeContainer)
-    //   this.curRenderNodes.push(renderNode)
-    // } else {
-    //   this.removeRenderNode(segmentNode.nid)
-    // }
-
-    // trackLogsEnd(LOGS_TYPE.beforeFillWork)
-    // 异步填充
-    this.fillRenderNode(node)
-    // if (!notFill) {
-    //   // 异步填充（如果懒绘制则无需等待绘制结果）
-    //   if (this.curDrawIsLazy) {
-    //     this.fillRenderNode(renderNode)
-    //   } else {
-    //     await this.fillRenderNode(renderNode)
-    //     trackLogsStart(LOGS_TYPE.drawTime, this)
-    //     /**切记不能移除：该函数能确保渲染时能拿到准确的帧数据 */
-    //     this.curLayer.draw()
-    //     trackLogsEnd(LOGS_TYPE.drawTime, this)
-    //   }
-    // }
+    this.curLayer.add(sprite.container)
+    this.fillRenderNode(sprite)
   }
 }
